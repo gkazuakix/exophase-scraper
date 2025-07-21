@@ -1,25 +1,35 @@
-import fetch from 'node-fetch';
-import cheerio from 'cheerio';
+const axios = require("axios");
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
-    const response = await fetch('https://www.exophase.com/nintendo/user/56e497b70d5d0d54/');
-    const html = await response.text();
-    const $ = cheerio.load(html);
-
-    const games = [];
-
-    $('.game-card').each((i, el) => {
-      const title = $(el).find('.game-title').text().trim();
-      const timePlayed = $(el).find('.gametime').text().trim();
-      const img = $(el).find('img').attr('src');
-      if (title) {
-        games.push({ title, timePlayed, img });
-      }
+    const url = "https://api.exophase.com/public/player/4983302/games";
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+        Accept: "application/json",
+      },
     });
 
-    res.status(200).json(games.slice(0, 5));
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const games = response.data.games;
+
+    // Get the most recent game
+    const recentGame = games
+      .filter(game => game.lastplayed > 0)
+      .sort((a, b) => b.lastplayed - a.lastplayed)[0];
+
+    if (!recentGame) {
+      return res.status(404).json({ error: "No games found" });
+    }
+
+    const result = {
+      title: recentGame.meta.title,
+      playtime: recentGame.playtime,
+      image: recentGame.resource_tile,
+    };
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error fetching games:", error.message);
+    res.status(500).json({ error: "Failed to fetch games" });
   }
-}
+};
