@@ -1,6 +1,15 @@
 const axios = require("axios");
 
 module.exports = async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // allow all origins
+  res.setHeader('Access-Control-Allow-Methods', 'GET'); // allow GET requests
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // allow content headers
+
+  // You might need to handle preflight (OPTIONS) requests too:
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   try {
     const url = "https://api.exophase.com/public/player/4983302/games";
     const response = await axios.get(url, {
