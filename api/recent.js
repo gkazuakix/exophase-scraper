@@ -38,6 +38,7 @@ module.exports = async function handler(req, res) {
       last_played: new Date(recentGame.lastplayed * 1000).toLocaleString("en-US", {
         dateStyle: "medium",
         timeStyle: "short",
+        timeZone: "America/Chicago"
       })
     };
 
