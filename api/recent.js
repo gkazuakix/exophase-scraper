@@ -34,6 +34,11 @@ module.exports = async function handler(req, res) {
       title: recentGame.meta.title,
       playtime: recentGame.playtime,
       image: recentGame.resource_tile,
+      last_played_unix: recentGame.lastplayed,
+      last_played: new Date(recentGame.lastplayed * 1000).toLocaleString("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      })
     };
 
     res.status(200).json(result);
