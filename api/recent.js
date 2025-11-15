@@ -14,11 +14,21 @@ module.exports = async function handler(req, res) {
     const url = "https://api.exophase.com/public/player/4983302/games";
     const response = await axios.get(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0",
-        Accept: "application/json",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept":
+          "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Cache-Control": "no-cache",
+        "Pragma": "no-cache",
+        "Referer": "https://www.exophase.com/",
+        "Origin": "https://www.exophase.com",
+        "DNT": "1",
+        "Connection": "keep-alive",
       },
+      decompress: true
     });
-
     const games = response.data.games;
 
     // Get the most recent game
